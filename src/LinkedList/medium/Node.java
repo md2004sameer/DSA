@@ -1,4 +1,4 @@
-package LinkedList.easy;
+package LinkedList.medium;
 
 public class Node {
     int data;
