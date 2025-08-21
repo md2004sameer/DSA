@@ -1,8 +1,4 @@
 package Sorting;
-
-// Online Java Compiler
-// Use this editor to write, compile and run your Java code online
-
 class bubble {
     public static void main(String[] args) {
         int arr[] = { 2,4,6,12,8,65,23,88,56,32,66};

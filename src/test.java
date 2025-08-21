@@ -16,6 +16,6 @@ public class test {
 // git status 
 /*
 git add .
-git commit -m "update: added Queue data structure implementation using Array and Linked !! "
+git commit -m "update: added Sorting algorithm , buuble sort and selection sort. !! "
 git push
  */
