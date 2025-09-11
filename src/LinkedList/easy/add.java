@@ -3,16 +3,17 @@ package LinkedList.easy;
 public class add {
 
     public static Node addAtBegin(Node head, int data) {
-        Node newNode = new Node(data);
+        Node newNode = new Node(data);  // create a new node
         if(head == null){
-             return newNode;
+             return newNode; // return new node as head
         }
-        newNode.next = head;
+        newNode.next = head; 
         head = newNode;
         return head;
     }
 
     public static Node addAtEnd(Node head , int data){
+        // traverse to end of ll and next of curr is newNode
         Node newNode = new Node(data);
 
         if(head == null) return newNode;

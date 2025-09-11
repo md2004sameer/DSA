@@ -1,6 +1,6 @@
 package Sorting;
 
-class Main {
+class QuickSort {
     
     
     public static void quickSort(int arr[] , int low , int high){
