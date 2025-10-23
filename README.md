@@ -79,4 +79,4 @@ If you find this repository useful:
 * Follow me for daily problem-solving updates
 
 
-> **Remember:** Small daily steps lead to big results in coding 🚀
+> **Remember:**  daily small steps lead to big results in coding 🚀

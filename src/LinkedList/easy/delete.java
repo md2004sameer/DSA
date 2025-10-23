@@ -1,11 +1,13 @@
 package LinkedList.easy;
 
-public class delete {
+public class delete extends add {
 
     public Node delBegin(Node head ){
-        if(head == null) return null;
+        if(head == null) return null; // if head is null return null.
 
-        head = head.next;
+        Node del = head;
+        System.out.println("deleted node : "+del.data);
+        head = head.next; // else move a pointer to next , without storing it any where in this way we lost it.
 
         return head;
     }
@@ -31,7 +33,34 @@ public class delete {
         }
         curr.next = curr.next.next;
 
+        System.out.println(target.data+" : is deleted.");
+
         return head;
+    }
+    public static Node delAfter(Node head , Node target ){
+        if(head == null || head.next == target) return head;
+
+        Node curr = head;
+
+        while (curr.next != target){ // place your pointer just before target element.
+            curr = curr.next;
+        }
+        curr = curr.next.next; // and just move the pointer twice skipping the pointer.
+        return head;
+    }
+
+    public static void main(String [] args){
+        Node head = null;
+        head = addAtBegin(head , 1);
+        head = addAtBegin(head , 3);
+        head = addAtBegin(head , 5);
+        head = addAtBegin(head , 7);
+        head = addAtBegin(head , 9);
+        print(head);
+        Node target = new Node(9);
+        head = delBefore(head , target);
+        print(head);
+
     }
     
 }

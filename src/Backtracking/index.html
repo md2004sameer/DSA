@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Backtracking Algorithm Visualizer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #1a2a6c;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .explanation, .visualization {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 8px;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .code-line {
+            margin: 5px 0;
+            padding: 2px 0;
+        }
+        
+        .code-highlight {
+            background-color: rgba(255, 215, 0, 0.4);
+            border-left: 3px solid gold;
+            padding-left: 10px;
+            transition: all 0.3s;
+            display: block;
+        }
+        
+        .array-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        
+        .array-element {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .current {
+            background: rgba(255, 215, 0, 0.7);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+        }
+        
+        .included {
+            background: rgba(0, 255, 0, 0.3);
+            border: 2px solid #00ff00;
+        }
+        
+        .excluded {
+            background: rgba(255, 0, 0, 0.3);
+            border: 2px solid #ff0000;
+        }
+        
+        .current-list {
+            min-height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .current-list-item {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        
+        .added {
+            background: rgba(0, 255, 0, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .removed {
+            background: rgba(255, 0, 0, 0.3);
+            transform: scale(0.9);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 120px;
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .step-info {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 80px;
+        }
+        
+        .recursion-stack {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 120px;
+        }
+        
+        .stack-item {
+            margin: 5px 0;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .active-stack {
+            background: rgba(255, 215, 0, 0.3);
+            border-left: 4px solid gold;
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .output-line {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .backtrack-highlight {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        /* Tree Visualization */
+        .tree-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 200px;
+        }
+        
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        
+        .tree-node {
+            padding: 8px 12px;
+            margin: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+            min-width: 60px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tree-node.active {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: gold;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .tree-node.visited {
+            background: rgba(0, 150, 255, 0.2);
+            border-color: #0096ff;
+        }
+        
+        /* Speed Controls */
+        .speed-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .speed-slider {
+            flex: 1;
+            max-width: 200px;
+            
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: gold;
+            cursor: pointer;
+        }
+        
+        .speed-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: gold;
+            cursor: pointer;
+            border: none;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(90deg, #00ff88, #00ccff);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        /* Tabs for multiple views */
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid gold;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Statistics Panel */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .array-element {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            button {
+                padding: 10px 15px;
+                min-width: 100px;
+                font-size: 0.9rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                gap: 10px;
+            }
+            
+            .explanation, .visualization {
+                padding: 15px;
+            }
+            
+            .array-element {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            button {
+                padding: 8px 12px;
+                min-width: 80px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Enhanced Backtracking Algorithm Visualizer</h1>
+            <p class="subtitle">Understanding Subsequence Generation with Interactive Visualizations</p>
+        </header>
+        
+        <div class="content">
+            <div class="explanation">
+                <h2>Algorithm Explanation</h2>
+                <p>This visualization demonstrates how backtracking generates all possible subsequences of an array.</p>
+                
+                <div class="tabs">
+                    <div class="tab active" data-tab="code">Code</div>
+                    <div class="tab" data-tab="concepts">Key Concepts</div>
+                    <div class="tab" data-tab="complexity">Complexity</div>
+                </div>
+                
+                <div class="tab-content active" id="code-tab">
+                    <div class="code-block">
+                        <div class="code-line" id="line-1">public static void helper(int idx, List&lt;Integer&gt; curr, int[] arr) {</div>
+                        <div class="code-line" id="line-2">  // Base case: when we've processed all elements</div>
+                        <div class="code-line" id="line-3">  if (idx == arr.length) {</div>
+                        <div class="code-line" id="line-4">    System.out.println(curr); // Print the current subsequence</div>
+                        <div class="code-line" id="line-5">    System.out.println("backtrack");</div>
+                        <div class="code-line" id="line-6">    return;</div>
+                        <div class="code-line" id="line-7">  }</div>
+                        <div class="code-line" id="line-8">  </div>
+                        <div class="code-line" id="line-9">  // INCLUDE the current element</div>
+                        <div class="code-line" id="line-10">  curr.add(arr[idx]);</div>
+                        <div class="code-line" id="line-11">  helper(idx + 1, curr, arr); // Recurse with the element included</div>
+                        <div class="code-line" id="line-12">  curr.remove(curr.size() - 1); // BACKTRACK: remove the element</div>
+                        <div class="code-line" id="line-13">  </div>
+                        <div class="code-line" id="line-14">  // EXCLUDE the current element</div>
+                        <div class="code-line" id="line-15">  helper(idx + 1, curr, arr); // Recurse with the element excluded</div>
+                        <div class="code-line" id="line-16">}</div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="concepts-tab">
+                    <p><strong>Key Concepts:</strong></p>
+                    <ul>
+                        <li><span class="tooltip">Backtracking<span class="tooltiptext">A technique to solve problems by trying different possibilities and undoing (backtracking) when a path doesn't lead to a solution</span></span>: A technique to solve problems by trying different possibilities and undoing (backtracking) when a path doesn't lead to a solution.</li>
+                        <li><span class="tooltip">Subsequence<span class="tooltiptext">A sequence derived from another sequence by deleting zero or more elements without changing the order</span></span>: A sequence derived from another sequence by deleting zero or more elements without changing the order.</li>
+                        <li><span class="tooltip">Recursion Tree<span class="tooltiptext">The algorithm explores all possibilities using a binary decision tree (include/exclude at each step)</span></span>: The algorithm explores all possibilities using a binary decision tree (include/exclude at each step).</li>
+                        <li><span class="tooltip">State Space<span class="tooltiptext">All possible states the algorithm can be in during execution</span></span>: The complete set of all possible subsequences that can be generated.</li>
+                    </ul>
+                </div>
+                
+                <div class="tab-content" id="complexity-tab">
+                    <p><strong>Time Complexity:</strong> O(2<sup>n</sup>) where n is the array length</p>
+                    <p><strong>Space Complexity:</strong> O(n) for the recursion stack</p>
+                    <p><strong>Total Subsequences:</strong> 2<sup>n</sup> (including the empty subsequence)</p>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-label">Array Size</div>
+                            <div class="stat-value" id="array-size">3</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Subsequences</div>
+                            <div class="stat-value" id="total-subs">8</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Generated</div>
+                            <div class="stat-value" id="generated-subs">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="visualization">
+                <h2>Interactive Visualization</h2>
+                
+                <div class="array-container">
+                    <!-- Array elements will be populated by JavaScript -->
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                
+                <div class="step-info">
+                    <h3>Current Step</h3>
+                    <p id="step-description">Click "Start" to begin the visualization</p>
+                </div>
+                
+                <div class="current-list">
+                    <h3>Current Subsequence</h3>
+                    <div id="current-list-items">[]</div>
+                </div>
+                
+                <div class="tree-container">
+                    <h3>Recursion Tree</h3>
+                    <div class="tree" id="recursion-tree">
+                        <!-- Tree will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="recursion-stack">
+                    <h3>Recursion Stack</h3>
+                    <div id="stack-items">Stack is empty</div>
+                </div>
+                
+                <div class="output">
+                    <h3>Output</h3>
+                    <div id="output-content">No output yet</div>
+                </div>
+                
+                <div class="speed-controls">
+                    <span>Speed:</span>
+                    <input type="range" min="1" max="10" value="5" class="speed-slider" id="speed-slider">
+                    <span id="speed-value">Medium</span>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-btn">Start</button>
+                    <button id="step-btn" disabled>Next Step</button>
+                    <button id="auto-btn" disabled>Auto Play</button>
+                    <button id="reset-btn" disabled>Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced algorithm state
+        let state = {
+            arr: [1, 2, 3],
+            idx: 0,
+            curr: [],
+            callStack: [],
+            output: [],
+            isRunning: false,
+            isAutoPlaying: false,
+            currentStep: 0,
+            steps: [],
+            speed: 5,
+            treeData: {},
+            generatedCount: 0
+        };
+
+        // DOM elements
+        const arrayContainer = document.querySelector('.array-container');
+        const currentListItems = document.getElementById('current-list-items');
+        const stackItems = document.getElementById('stack-items');
+        const outputContent = document.getElementById('output-content');
+        const stepDescription = document.getElementById('step-description');
+        const startBtn = document.getElementById('start-btn');
+        const stepBtn = document.getElementById('step-btn');
+        const autoBtn = document.getElementById('auto-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const speedSlider = document.getElementById('speed-slider');
+        const speedValue = document.getElementById('speed-value');
+        const progressBar = document.getElementById('progress-bar');
+        const recursionTree = document.getElementById('recursion-tree');
+        const arraySize = document.getElementById('array-size');
+        const totalSubs = document.getElementById('total-subs');
+        const generatedSubs = document.getElementById('generated-subs');
+
+        // Speed mapping
+        const speedMap = {
+            1: {value: 2000, label: "Very Slow"},
+            2: {value: 1500, label: "Slow"},
+            3: {value: 1000, label: "Medium Slow"},
+            4: {value: 750, label: "Slow-Medium"},
+            5: {value: 500, label: "Medium"},
+            6: {value: 350, label: "Medium-Fast"},
+            7: {value: 250, label: "Fast"},
+            8: {value: 150, label: "Very Fast"},
+            9: {value: 100, label: "Ultra Fast"},
+            10: {value: 50, label: "Instant"}
+        };
+
+        // Initialize the visualization
+        function init() {
+            // Create array elements
+            updateArrayDisplay();
+            
+            // Set up event listeners
+            startBtn.addEventListener('click', startVisualization);
+            stepBtn.addEventListener('click', nextStep);
+            autoBtn.addEventListener('click', toggleAutoPlay);
+            resetBtn.addEventListener('click', resetVisualization);
+            speedSlider.addEventListener('input', updateSpeed);
+            
+            // Set up tab functionality
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Update statistics
+            updateStatistics();
+        }
+
+        // Update array display
+        function updateArrayDisplay() {
+            arrayContainer.innerHTML = '';
+            state.arr.forEach((value, index) => {
+                const element = document.createElement('div');
+                element.className = 'array-element';
+                element.textContent = value;
+                element.id = `arr-${index}`;
+                arrayContainer.appendChild(element);
+            });
+        }
+
+        // Switch between tabs
+        function switchTab(tabId) {
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+        }
+
+        // Update speed based on slider
+        function updateSpeed() {
+            state.speed = parseInt(speedSlider.value);
+            speedValue.textContent = speedMap[state.speed].label;
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            arraySize.textContent = state.arr.length;
+            totalSubs.textContent = Math.pow(2, state.arr.length);
+            generatedSubs.textContent = state.generatedCount;
+        }
+
+        // Start the visualization
+        function startVisualization() {
+            state.isRunning = true;
+            startBtn.disabled = true;
+            stepBtn.disabled = false;
+            autoBtn.disabled = false;
+            resetBtn.disabled = false;
+            
+            // Generate all steps in advance
+            state.steps = [];
+            state.treeData = {};
+            state.generatedCount = 0;
+            generateSteps(0, [], null);
+            
+            // Initialize tree visualization
+            renderTree();
+            
+            // Show first step
+            nextStep();
+            
+            // Update statistics
+            updateStatistics();
+        }
+
+        // Generate all algorithm steps recursively
+        function generateSteps(idx, curr, parentId) {
+            const nodeId = `${idx}-${curr.join(',')}`;
+            state.treeData[nodeId] = {
+                idx: idx,
+                curr: [...curr],
+                parent: parentId,
+                children: []
+            };
+            
+            if (parentId) {
+                state.treeData[parentId].children.push(nodeId);
+            }
+            
+            // Base case
+            if (idx === state.arr.length) {
+                state.steps.push({
+                    type: 'base',
+                    idx: idx,
+                    curr: [...curr],
+                    nodeId: nodeId,
+                    description: `Reached base case (idx = ${idx}), printing subsequence: [${curr.join(', ')}]`
+                });
+                return;
+            }
+            
+            // Include step
+            state.steps.push({
+                type: 'include',
+                idx: idx,
+                curr: [...curr],
+                nodeId: nodeId,
+                description: `INCLUDE: Adding ${state.arr[idx]} to current subsequence`
+            });
+            
+            curr.push(state.arr[idx]);
+            generateSteps(idx + 1, curr, nodeId);
+            
+            // Backtrack step
+            state.steps.push({
+                type: 'backtrack',
+                idx: idx,
+                curr: [...curr],
+                nodeId: nodeId,
+                description: `BACKTRACK: Removing ${curr.pop()} from current subsequence`
+            });
+            
+            // Exclude step
+            state.steps.push({
+                type: 'exclude',
+                idx: idx,
+                curr: [...curr],
+                nodeId: nodeId,
+                description: `EXCLUDE: Skipping ${state.arr[idx]} and moving to next element`
+            });
+            
+            generateSteps(idx + 1, curr, nodeId);
+        }
+
+        // Render the recursion tree
+        function renderTree() {
+            recursionTree.innerHTML = '';
+            
+            // Group nodes by level (idx value)
+            const levels = {};
+            Object.keys(state.treeData).forEach(nodeId => {
+                const node = state.treeData[nodeId];
+                if (!levels[node.idx]) {
+                    levels[node.idx] = [];
+                }
+                levels[node.idx].push(nodeId);
+            });
+            
+            // Create levels in the tree
+            Object.keys(levels).sort((a, b) => parseInt(a) - parseInt(b)).forEach(level => {
+                const levelDiv = document.createElement('div');
+                levelDiv.className = 'tree-level';
+                
+                levels[level].forEach(nodeId => {
+                    const node = state.treeData[nodeId];
+                    const nodeDiv = document.createElement('div');
+                    nodeDiv.className = 'tree-node';
+                    nodeDiv.id = `tree-${nodeId}`;
+                    nodeDiv.textContent = `[${node.curr.join(',')}]`;
+                    nodeDiv.setAttribute('data-idx', node.idx);
+                    levelDiv.appendChild(nodeDiv);
+                });
+                
+                recursionTree.appendChild(levelDiv);
+            });
+        }
+
+        // Toggle auto play
+        function toggleAutoPlay() {
+            state.isAutoPlaying = !state.isAutoPlaying;
+            autoBtn.textContent = state.isAutoPlaying ? 'Pause' : 'Auto Play';
+            stepBtn.disabled = state.isAutoPlaying;
+            
+            if (state.isAutoPlaying) {
+                autoStep();
+            }
+        }
+
+        // Auto play steps
+        function autoStep() {
+            if (!state.isAutoPlaying || state.currentStep >= state.steps.length) {
+                state.isAutoPlaying = false;
+                autoBtn.textContent = 'Auto Play';
+                stepBtn.disabled = false;
+                return;
+            }
+            
+            nextStep();
+            setTimeout(autoStep, speedMap[state.speed].value);
+        }
+
+        // Move to the next step in the visualization
+        function nextStep() {
+            if (state.currentStep >= state.steps.length) {
+                stepDescription.textContent = "Algorithm completed! All subsequences generated.";
+                stepBtn.disabled = true;
+                autoBtn.disabled = true;
+                return;
+            }
+            
+            const step = state.steps[state.currentStep];
+            
+            // Update progress bar
+            progressBar.style.width = `${(state.currentStep / state.steps.length) * 100}%`;
+            
+            // Update visualization based on step type
+            switch(step.type) {
+                case 'include':
+                    updateCurrentElement(step.idx, true);
+                    updateCurrentList(step.curr, state.arr[step.idx], 'add');
+                    highlightCodeLine(10); // Line for include
+                    break;
+                case 'backtrack':
+                    updateCurrentList(step.curr, step.curr[step.curr.length - 1], 'remove');
+                    highlightCodeLine(12); // Line for backtrack
+                    break;
+                case 'exclude':
+                    updateCurrentElement(step.idx, false);
+                    highlightCodeLine(15); // Line for exclude
+                    break;
+                case 'base':
+                    addOutput(`[${step.curr.join(', ')}]`);
+                    addOutput("backtrack", true);
+                    state.generatedCount++;
+                    updateStatistics();
+                    highlightCodeLine(4); // Line for base case
+                    break;
+            }
+            
+            // Update tree visualization
+            updateTreeVisualization(step.nodeId);
+            
+            // Update step description
+            stepDescription.textContent = step.description;
+            
+            // Update recursion stack
+            updateRecursionStack(step);
+            
+            state.currentStep++;
+        }
+
+        // Highlight the current line in code
+        function highlightCodeLine(lineNumber) {
+            // Remove highlight from all lines
+            document.querySelectorAll('.code-line').forEach(line => {
+                line.classList.remove('code-highlight');
+            });
+            
+            // Highlight current line
+            const currentLine = document.getElementById(`line-${lineNumber}`);
+            if (currentLine) {
+                currentLine.classList.add('code-highlight');
+            }
+        }
+
+        // Update the highlighted current array element
+        function updateCurrentElement(idx, isIncluded) {
+            // Remove highlight from all elements
+            document.querySelectorAll('.array-element').forEach(el => {
+                el.classList.remove('current', 'included', 'excluded');
+            });
+            
+            // Highlight current element if not at base case
+            if (idx < state.arr.length) {
+                const currentElement = document.getElementById(`arr-${idx}`);
+                currentElement.classList.add('current');
+                
+                if (isIncluded) {
+                    currentElement.classList.add('included');
+                } else {
+                    currentElement.classList.add('excluded');
+                }
+            }
+        }
+
+        // Update the current list display
+        function updateCurrentList(curr, value, action) {
+            currentListItems.innerHTML = '';
+            
+            if (curr.length === 0) {
+                currentListItems.textContent = '[]';
+                return;
+            }
+            
+            curr.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'current-list-item';
+                itemEl.textContent = item;
+                
+                if (action === 'add' && item === value) {
+                    itemEl.classList.add('added');
+                    setTimeout(() => itemEl.classList.remove('added'), 500);
+                } else if (action === 'remove' && item === value) {
+                    itemEl.classList.add('removed');
+                    setTimeout(() => {
+                        itemEl.classList.remove('removed');
+                        // Actually remove the element from display after animation
+                        if (itemEl.parentNode) {
+                            itemEl.parentNode.removeChild(itemEl);
+                        }
+                    }, 500);
+                }
+                
+                currentListItems.appendChild(itemEl);
+            });
+        }
+
+        // Update tree visualization
+        function updateTreeVisualization(nodeId) {
+            // Remove active class from all nodes
+            document.querySelectorAll('.tree-node').forEach(node => {
+                node.classList.remove('active');
+            });
+            
+            // Add active class to current node
+            const currentNode = document.getElementById(`tree-${nodeId}`);
+            if (currentNode) {
+                currentNode.classList.add('active');
+                
+                // Mark all parent nodes as visited
+                let parentId = state.treeData[nodeId].parent;
+                while (parentId) {
+                    const parentNode = document.getElementById(`tree-${parentId}`);
+                    if (parentNode) {
+                        parentNode.classList.add('visited');
+                    }
+                    parentId = state.treeData[parentId].parent;
+                }
+            }
+        }
+
+        // Update the recursion stack display
+        function updateRecursionStack(step) {
+            stackItems.innerHTML = '';
+            
+            if (step.type === 'base') {
+                const stackItem = document.createElement('div');
+                stackItem.className = 'stack-item active-stack';
+                stackItem.textContent = `helper(idx=${step.idx}, curr=[${step.curr.join(', ')}]) - BASE CASE`;
+                stackItems.appendChild(stackItem);
+                return;
+            }
+            
+            // For non-base cases, show the current call and implied recursive calls
+            const stackItem = document.createElement('div');
+            stackItem.className = 'stack-item active-stack';
+            
+            let action = '';
+            if (step.type === 'include') action = ' - INCLUDE PATH';
+            else if (step.type === 'exclude') action = ' - EXCLUDE PATH';
+            else if (step.type === 'backtrack') action = ' - BACKTRACKING';
+            
+            stackItem.textContent = `helper(idx=${step.idx}, curr=[${step.curr.join(', ')}])${action}`;
+            stackItems.appendChild(stackItem);
+            
+            // Show the next recursive call that will happen
+            if (step.type === 'include' || step.type === 'exclude') {
+                const nextStackItem = document.createElement('div');
+                nextStackItem.className = 'stack-item';
+                nextStackItem.textContent = `helper(idx=${step.idx + 1}, curr=[...]) - NEXT CALL`;
+                stackItems.appendChild(nextStackItem);
+            }
+        }
+
+        // Add output to the output area
+        function addOutput(text, isBacktrack = false) {
+            const outputLine = document.createElement('div');
+            outputLine.className = 'output-line';
+            
+            if (isBacktrack) {
+                outputLine.classList.add('backtrack-highlight');
+            }
+            
+            outputLine.textContent = text;
+            outputContent.appendChild(outputLine);
+            
+            // Scroll to bottom
+            outputContent.scrollTop = outputContent.scrollHeight;
+        }
+
+        // Reset the visualization
+        function resetVisualization() {
+            state.idx = 0;
+            state.curr = [];
+            state.callStack = [];
+            state.output = [];
+            state.isRunning = false;
+            state.isAutoPlaying = false;
+            state.currentStep = 0;
+            state.steps = [];
+            state.generatedCount = 0;
+            
+            // Reset UI
+            document.querySelectorAll('.array-element').forEach(el => {
+                el.classList.remove('current', 'added', 'removed', 'included', 'excluded');
+            });
+            
+            currentListItems.textContent = '[]';
+            stackItems.textContent = 'Stack is empty';
+            outputContent.textContent = 'No output yet';
+            stepDescription.textContent = 'Click "Start" to begin the visualization';
+            progressBar.style.width = '0%';
+            autoBtn.textContent = 'Auto Play';
+            
+            // Remove code highlighting
+            document.querySelectorAll('.code-line').forEach(line => {
+                line.classList.remove('code-highlight');
+            });
+            
+            // Reset tree visualization
+            document.querySelectorAll('.tree-node').forEach(node => {
+                node.classList.remove('active', 'visited');
+            });
+            
+            startBtn.disabled = false;
+            stepBtn.disabled = true;
+            autoBtn.disabled = true;
+            resetBtn.disabled = true;
+            
+            updateStatistics();
+        }
+
+        // Initialize the visualization when the page loads
+        window.onload = init;
+    </script>
+</body>
+</html>

@@ -7,7 +7,7 @@ public class add {
         if(head == null){
              return newNode; // return new node as head
         }
-        newNode.next = head; 
+        newNode.next = head; // placing the element just before the head , and curr element point towards head.
         head = newNode;
         return head;
     }
@@ -76,11 +76,14 @@ public class add {
     public static void main(String args[]){
 
         Node head = null;
+        Node target = new Node(5);
         head = addAtBegin(head , 1);
         head = addAtEnd(head , 2);
         head = addAtEnd(head , 3);
+        head = addBefore(head , target, 0);
         head = addAtEnd(head , 4);
         head = addAtEnd(head , 5);
+        head = addAfter(head , target, 0);
         print(head);
     }
 
