@@ -1,98 +1,87 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package tcs;import java.util.*;
+import java.util.function.BiFunction;
 
 public class Main {
-
-    private static final Map<String, Integer> nameToId = new HashMap<>();
-    private static int nextId = 0;
-    private static final Map<Integer, List<List<Integer>>> recipes = new HashMap<>();
-    private static int[] memo;
-    private static final int INFINITY = 1_000_000;
-
-    private static int getId(String name) {
-        return nameToId.computeIfAbsent(name, k -> nextId++);
+    static int gcd(int a, int b) {
+        while (b != 0) {
+            int t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
     }
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int n = Integer.parseInt(br.readLine().trim());
-
-        for (int i = 0; i < n; i++) {
-            String line = br.readLine().trim();
-            String[] parts = line.split("=");
-            int potionId = getId(parts[0].trim());
-
-            String[] ingredientsStr = parts[1].split("\\+");
-            List<Integer> ingredientIds = new ArrayList<>();
-            for (String ingredient : ingredientsStr) {
-                ingredientIds.add(getId(ingredient.trim()));
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt();
+        while (T-- > 0) {
+            int n = sc.nextInt();
+            int[] A = new int[n];
+            for (int i = 0; i < n; i++) {
+                A[i] = sc.nextInt();
             }
 
-            recipes.putIfAbsent(potionId, new ArrayList<>());
-            recipes.get(potionId).add(ingredientIds);
-        }
-
-        String targetPotion = br.readLine().trim();
-
-        if (!nameToId.containsKey(targetPotion)) {
-            System.out.print(0);
-            return;
-        }
-
-        int targetId = nameToId.get(targetPotion);
-        
-        memo = new int[nextId];
-        Arrays.fill(memo, -2);
-
-        int result = getMinOrbs(targetId);
-
-        if (result >= INFINITY) {
-            System.out.print("-1");
-        } else {
-            System.out.print(result);
-        }
-    }
-
-    private static int getMinOrbs(int id) {
-        if (memo[id] != -2) {
-            if (memo[id] == -1) {
-                return INFINITY;
+            // Compute overall GCD
+            int totalGcd = A[0];
+            for (int i = 1; i < n; i++) {
+                totalGcd = gcd(totalGcd, A[i]);
             }
-            return memo[id];
-        }
-
-        if (!recipes.containsKey(id)) {
-            memo[id] = 0;
-            return 0;
-        }
-
-        memo[id] = -1;
-
-        int minTotalOrbs = INFINITY;
-
-        for (List<Integer> recipe : recipes.get(id)) {
-            int currentRecipeOrbs = recipe.size() - 1;
-            
-            long ingredientsOrbs = 0;
-            for (int ingredientId : recipe) {
-                ingredientsOrbs += getMinOrbs(ingredientId);
+            if (totalGcd != 1) {
+                System.out.println(0);
+                continue;
             }
 
-            if (ingredientsOrbs < INFINITY) {
-                 long totalCostForThisRecipe = currentRecipeOrbs + ingredientsOrbs;
-                 minTotalOrbs = (int) Math.min(minTotalOrbs, totalCostForThisRecipe);
+            // If n==0, skip, but n>=1
+            // Build sparse table for GCD
+            int k = (int) (Math.log(n) / Math.log(2)) + 1;
+            int[][] st = new int[k][n];
+            for (int i = 0; i < n; i++) {
+                st[0][i] = A[i];
             }
-        }
+            for (int j = 1; j < k; j++) {
+                for (int i = 0; i + (1 << j) <= n; i++) {
+                    st[j][i] = gcd(st[j-1][i], st[j-1][i + (1 << (j-1))]);
+                }
+            }
 
-        memo[id] = minTotalOrbs;
-        return minTotalOrbs;
+            // Precompute log2 for indices
+            int[] log = new int[n+1];
+            log[1] = 0;
+            for (int i = 2; i <= n; i++) {
+                log[i] = log[i/2] + 1;
+            }
+
+            // BiFunction for range GCD query
+            BiFunction<Integer, Integer, Integer> queryGCD = (l, r) -> {
+                int len = r - l + 1;
+                int j = log[len];
+                return gcd(st[j][l], st[j][r - (1 << j) + 1]);
+            };
+
+            // Greedy segmentation
+            int segments = 0;
+            int i = 0;
+            while (i < n) {
+                int low = i, high = n-1;
+                int candidate = -1;
+                while (low <= high) {
+                    int mid = (low + high) / 2;
+                    int g = queryGCD.apply(i, mid);
+                    if (g == 1) {
+                        candidate = mid;
+                        high = mid - 1;
+                    } else {
+                        low = mid + 1;
+                    }
+                }
+                if (candidate == -1) {
+                    break;
+                }
+                segments++;
+                i = candidate + 1;
+            }
+            System.out.println(segments);
+        }
+        sc.close();
     }
 }
-

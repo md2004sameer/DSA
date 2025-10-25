@@ -17,6 +17,7 @@ public class revStack {
         int top = st.pop();
         insertAtBottom(st , val);
         st.push(top);
+
     }
      public static void main(String[] args) {
         Stack<Integer> st = new Stack<>();

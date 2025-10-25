@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced BST LCA Visualization</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 1100px) {
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        input, button, select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        input {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        button.primary {
+            background: #2ecc71;
+        }
+        
+        button.primary:hover {
+            background: #27ae60;
+        }
+        
+        button.secondary {
+            background: #e74c3c;
+        }
+        
+        button.secondary:hover {
+            background: #c0392b;
+        }
+        
+        .tree-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            position: relative;
+        }
+        
+        #tree-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .node {
+            fill: #3498db;
+            stroke: #2980b9;
+            stroke-width: 2;
+            transition: all 0.3s;
+        }
+        
+        .node.highlight {
+            fill: #e74c3c;
+        }
+        
+        .node.current {
+            fill: #f39c12;
+            r: 25;
+        }
+        
+        .node.lca {
+            fill: #2ecc71;
+            r: 25;
+        }
+        
+        .node.visited {
+            fill: #9b59b6;
+        }
+        
+        .line {
+            stroke: #7f8c8d;
+            stroke-width: 2;
+        }
+        
+        .log-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ecf0f1;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            transition: all 0.3s;
+        }
+        
+        .log-entry.enter {
+            background-color: #e8f4fd;
+            border-left: 4px solid #3498db;
+        }
+        
+        .log-entry.left {
+            background-color: #fff8e1;
+            border-left: 4px solid #f39c12;
+            margin-left: 20px;
+        }
+        
+        .log-entry.right {
+            background-color: #fff8e1;
+            border-left: 4px solid #f39c12;
+            margin-left: 20px;
+        }
+        
+        .log-entry.exit {
+            background-color: #e8f6f3;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .log-entry.null {
+            background-color: #f5f5f5;
+            border-left: 4px solid #95a5a6;
+            margin-left: 40px;
+        }
+        
+        .log-entry.active {
+            transform: scale(1.02);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .call-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stack-frame {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .stack-frame.active {
+            background: #e1f5fe;
+            border-left-color: #f39c12;
+        }
+        
+        .visualization-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recursion-depth {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .insights {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .insights h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .insight-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .code-preview {
+            margin-top: 20px;
+            padding: 20px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-line {
+            margin-bottom: 5px;
+        }
+        
+        .code-line.highlight {
+            background: #34495e;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .comparison-item {
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comparison-item h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .recursion-path {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            min-height: 60px;
+        }
+        
+        .node-value {
+            fill: white;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: central;
+            pointer-events: none;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Enhanced BST LCA Visualization</h1>
+            <p class="subtitle">Deep dive into recursive execution with multiple visualization perspectives</p>
+        </header>
+        
+        <div class="controls">
+            <input type="number" id="node1" placeholder="Node 1 value" min="1" max="100" value="20">
+            <input type="number" id="node2" placeholder="Node 2 value" min="1" max="100" value="40">
+            <button id="findLCA" class="primary">Find LCA</button>
+            <button id="stepForward">Step Forward</button>
+            <button id="autoPlay">Auto Play</button>
+            <button id="reset" class="secondary">Reset</button>
+            <select id="speed">
+                <option value="1000">Slow</option>
+                <option value="500" selected>Medium</option>
+                <option value="200">Fast</option>
+            </select>
+        </div>
+        
+        <div class="panels">
+            <div class="panel">
+                <h2>Binary Search Tree Visualization</h2>
+                <div class="tree-container">
+                    <svg id="tree-svg" width="100%" height="400"></svg>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="nodes-visited">0</div>
+                        <div class="stat-label">Nodes Visited</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="recursion-depth">0</div>
+                        <div class="stat-label">Max Depth</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="steps-count">0</div>
+                        <div class="stat-label">Steps</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h2>Recursive Call Stack & Execution Log</h2>
+                <div class="log-container" id="call-log"></div>
+                <div class="call-stack" id="call-stack"></div>
+                <div class="recursion-depth" id="depth-indicator">Current depth: 0</div>
+            </div>
+        </div>
+        
+        <div class="comparison">
+            <div class="comparison-item">
+                <h4>Recursion Path</h4>
+                <div class="recursion-path" id="recursion-path">Execution path will appear here</div>
+            </div>
+            <div class="comparison-item">
+                <h4>Algorithm Code</h4>
+                <div class="code-preview">
+                    <div class="code-line">function findLCA(node, p, q) {</div>
+                    <div class="code-line highlight" id="code-line-1">  if (node == null) return null;</div>
+                    <div class="code-line" id="code-line-2">  if (p < node.val && q < node.val)</div>
+                    <div class="code-line" id="code-line-3">    return findLCA(node.left, p, q);</div>
+                    <div class="code-line" id="code-line-4">  if (p > node.val && q > node.val)</div>
+                    <div class="code-line" id="code-line-5">    return findLCA(node.right, p, q);</div>
+                    <div class="code-line" id="code-line-6">  return node;</div>
+                    <div class="code-line">}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="insights">
+            <h3>Recursive Execution Insights</h3>
+            <div class="insight-item">
+                <h4>Understanding the Base Case</h4>
+                <p>The recursion stops when we reach a null node (leaf's child). This is our base case that prevents infinite recursion.</p>
+            </div>
+            <div class="insight-item">
+                <h4>Recursive Descent</h4>
+                <p>If both target nodes are smaller than current node, we recursively search the left subtree. If both are larger, we search the right subtree.</p>
+            </div>
+            <div class="insight-item">
+                <h4>LCA Identification</h4>
+                <p>The current node is the LCA when one target is in its left subtree and the other is in its right subtree, or when the current node is one of the targets.</p>
+            </div>
+            <div class="insight-item">
+                <h4>Backtracking</h4>
+                <p>Once the LCA is found in a subtree, the result propagates back up through the recursive call stack without further searching.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BST Node class
+        class Node {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+            }
+        }
+
+        // BST class
+        class BST {
+            constructor() {
+                this.root = null;
+                this.values = [];
+            }
+
+            insert(value) {
+                const newNode = new Node(value);
+                if (this.root === null) {
+                    this.root = newNode;
+                } else {
+                    this.insertNode(this.root, newNode);
+                }
+                this.values.push(value);
+            }
+
+            insertNode(node, newNode) {
+                if (newNode.value < node.value) {
+                    if (node.left === null) {
+                        node.left = newNode;
+                    } else {
+                        this.insertNode(node.left, newNode);
+                    }
+                } else {
+                    if (node.right === null) {
+                        node.right = newNode;
+                    } else {
+                        this.insertNode(node.right, newNode);
+                    }
+                }
+            }
+
+            // Find LCA with detailed logging
+            findLCA(node1, node2) {
+                const log = [];
+                const path = [];
+                const callStack = [];
+                let nodesVisited = 0;
+                let maxDepth = 0;
+                
+                const result = this.findLCARecursive(
+                    this.root, node1, node2, log, path, callStack, 0, 
+                    { nodesVisited, maxDepth }
+                );
+                
+                return { 
+                    result, 
+                    log, 
+                    path,
+                    callStack,
+                    stats: {
+                        nodesVisited: result.nodesVisited,
+                        maxDepth: result.maxDepth
+                    }
+                };
+            }
+
+            findLCARecursive(node, node1, node2, log, path, callStack, depth, stats) {
+                stats.nodesVisited++;
+                stats.maxDepth = Math.max(stats.maxDepth, depth);
+                
+                const indent = "  ".repeat(depth);
+                const callId = `call-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                
+                // Log entry
+                log.push({
+                    type: 'enter',
+                    message: `${indent}ENTER node ${node ? node.value : 'null'}`,
+                    node: node ? node.value : null,
+                    depth,
+                    callId
+                });
+
+                // Update call stack
+                callStack.push({
+                    node: node ? node.value : null,
+                    depth,
+                    callId,
+                    status: 'active'
+                });
+                
+                // Update path
+                path.push(node ? node.value : 'null');
+
+                // Base case: node is null
+                if (node === null) {
+                    log.push({
+                        type: 'null',
+                        message: `${indent}EXIT node null → null`,
+                        node: null,
+                        depth,
+                        callId
+                    });
+                    
+                    // Update call stack
+                    callStack.find(call => call.callId === callId).status = 'completed';
+                    
+                    return { 
+                        node: null, 
+                        nodesVisited: stats.nodesVisited, 
+                        maxDepth: stats.maxDepth 
+                    };
+                }
+
+                let result;
+
+                // If both values are smaller, LCA is in left subtree
+                if (node1 < node.value && node2 < node.value) {
+                    log.push({
+                        type: 'info',
+                        message: `${indent}Both values are smaller, going LEFT`,
+                        node: node.value,
+                        depth,
+                        callId
+                    });
+                    
+                    const leftResult = this.findLCARecursive(
+                        node.left, node1, node2, log, path, callStack, depth + 1, stats
+                    );
+                    
+                    log.push({
+                        type: 'left',
+                        message: `${indent}LEFT returned ${leftResult.node ? leftResult.node.value : 'null'}`,
+                        node: node.value,
+                        depth,
+                        callId
+                    });
+                    
+                    result = leftResult.node;
+                }
+                // If both values are greater, LCA is in right subtree
+                else if (node1 > node.value && node2 > node.value) {
+                    log.push({
+                        type: 'info',
+                        message: `${indent}Both values are larger, going RIGHT`,
+                        node: node.value,
+                        depth,
+                        callId
+                    });
+                    
+                    const rightResult = this.findLCARecursive(
+                        node.right, node1, node2, log, path, callStack, depth + 1, stats
+                    );
+                    
+                    log.push({
+                        type: 'right',
+                        message: `${indent}RIGHT returned ${rightResult.node ? rightResult.node.value : 'null'}`,
+                        node: node.value,
+                        depth,
+                        callId
+                    });
+                    
+                    result = rightResult.node;
+                }
+                // Current node is the LCA
+                else {
+                    log.push({
+                        type: 'info',
+                        message: `${indent}LCA FOUND: ${node.value}`,
+                        node: node.value,
+                        depth,
+                        callId
+                    });
+                    
+                    result = node;
+                }
+
+                log.push({
+                    type: 'exit',
+                    message: `${indent}EXIT node ${node.value} → ${result ? result.value : 'null'}`,
+                    node: node.value,
+                    depth,
+                    callId
+                });
+                
+                // Update call stack
+                callStack.find(call => call.callId === callId).status = 'completed';
+                
+                return { 
+                    node: result, 
+                    nodesVisited: stats.nodesVisited, 
+                    maxDepth: stats.maxDepth 
+                };
+            }
+        }
+
+        // Visualization and interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            const svg = document.getElementById('tree-svg');
+            const callLog = document.getElementById('call-log');
+            const callStack = document.getElementById('call-stack');
+            const recursionPath = document.getElementById('recursion-path');
+            const depthIndicator = document.getElementById('depth-indicator');
+            const node1Input = document.getElementById('node1');
+            const node2Input = document.getElementById('node2');
+            const findLCAButton = document.getElementById('findLCA');
+            const stepForwardButton = document.getElementById('stepForward');
+            const autoPlayButton = document.getElementById('autoPlay');
+            const resetButton = document.getElementById('reset');
+            const speedSelect = document.getElementById('speed');
+            const nodesVisitedEl = document.getElementById('nodes-visited');
+            const recursionDepthEl = document.getElementById('recursion-depth');
+            const stepsCountEl = document.getElementById('steps-count');
+            
+            // Code line elements
+            const codeLines = {};
+            for (let i = 1; i <= 6; i++) {
+                codeLines[i] = document.getElementById(`code-line-${i}`);
+            }
+
+            // Create a sample BST
+            const bst = new BST();
+            const values = [50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45, 55, 65, 75, 85];
+            values.forEach(value => bst.insert(value));
+
+            let currentLog = [];
+            let currentPath = [];
+            let currentCallStack = [];
+            let currentStep = 0;
+            let lcaNode = null;
+            let autoPlayInterval = null;
+            let visitedNodes = new Set();
+            let currentStats = { nodesVisited: 0, maxDepth: 0 };
+
+            // Draw the initial tree
+            drawTree(bst.root);
+
+            // Event listeners
+            findLCAButton.addEventListener('click', function() {
+                const node1 = parseInt(node1Input.value);
+                const node2 = parseInt(node2Input.value);
+                
+                if (isNaN(node1) || isNaN(node2)) {
+                    alert('Please enter valid node values');
+                    return;
+                }
+                
+                if (!bst.values.includes(node1) || !bst.values.includes(node2)) {
+                    alert('One or both nodes not found in the tree');
+                    return;
+                }
+                
+                const result = bst.findLCA(node1, node2);
+                lcaNode = result.result;
+                currentLog = result.log;
+                currentPath = result.path;
+                currentCallStack = result.callStack;
+                currentStats = result.stats;
+                currentStep = 0;
+                visitedNodes = new Set();
+                
+                callLog.innerHTML = '';
+                callStack.innerHTML = '';
+                recursionPath.textContent = 'Start → ';
+                stepForwardButton.disabled = false;
+                autoPlayButton.disabled = false;
+                updateStats();
+                drawTree(bst.root);
+                
+                // Reset code highlighting
+                Object.values(codeLines).forEach(line => {
+                    line.classList.remove('highlight');
+                });
+            });
+
+            stepForwardButton.addEventListener('click', function() {
+                executeStep();
+            });
+
+            autoPlayButton.addEventListener('click', function() {
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = null;
+                    autoPlayButton.textContent = 'Auto Play';
+                    stepForwardButton.disabled = false;
+                } else {
+                    autoPlayButton.textContent = 'Pause';
+                    stepForwardButton.disabled = true;
+                    const speed = parseInt(speedSelect.value);
+                    autoPlayInterval = setInterval(function() {
+                        if (currentStep >= currentLog.length) {
+                            clearInterval(autoPlayInterval);
+                            autoPlayInterval = null;
+                            autoPlayButton.textContent = 'Auto Play';
+                            stepForwardButton.disabled = true;
+                            return;
+                        }
+                        executeStep();
+                    }, speed);
+                }
+            });
+
+            resetButton.addEventListener('click', function() {
+                resetVisualization();
+            });
+
+            speedSelect.addEventListener('change', function() {
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = null;
+                    autoPlayButton.textContent = 'Auto Play';
+                    stepForwardButton.disabled = false;
+                }
+            });
+
+            function executeStep() {
+                if (currentStep < currentLog.length) {
+                    const logEntry = currentLog[currentStep];
+                    displayLogEntry(logEntry);
+                    updateCallStack(logEntry);
+                    updateRecursionPath(logEntry);
+                    updateCodeHighlighting(logEntry);
+                    updateDepthIndicator(logEntry);
+                    
+                    // Track visited nodes
+                    if (logEntry.node && logEntry.type === 'enter') {
+                        visitedNodes.add(logEntry.node);
+                    }
+                    
+                    // Highlight current node in the tree
+                    drawTree(bst.root, logEntry.node, lcaNode ? lcaNode.value : null, visitedNodes);
+                    
+                    currentStep++;
+                    stepsCountEl.textContent = currentStep;
+                    
+                    if (currentStep === currentLog.length) {
+                        stepForwardButton.disabled = true;
+                        if (autoPlayInterval) {
+                            clearInterval(autoPlayInterval);
+                            autoPlayInterval = null;
+                            autoPlayButton.textContent = 'Auto Play';
+                        }
+                    }
+                }
+            }
+
+            function resetVisualization() {
+                currentLog = [];
+                currentPath = [];
+                currentCallStack = [];
+                currentStep = 0;
+                lcaNode = null;
+                visitedNodes = new Set();
+                
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = null;
+                    autoPlayButton.textContent = 'Auto Play';
+                }
+                
+                callLog.innerHTML = '';
+                callStack.innerHTML = '';
+                recursionPath.textContent = 'Execution path will appear here';
+                depthIndicator.textContent = 'Current depth: 0';
+                stepForwardButton.disabled = true;
+                autoPlayButton.disabled = false;
+                
+                // Reset code highlighting
+                Object.values(codeLines).forEach(line => {
+                    line.classList.remove('highlight');
+                });
+                
+                updateStats();
+                drawTree(bst.root);
+            }
+
+            function updateStats() {
+                nodesVisitedEl.textContent = currentStats.nodesVisited;
+                recursionDepthEl.textContent = currentStats.maxDepth;
+                stepsCountEl.textContent = currentStep;
+            }
+
+            function displayLogEntry(logEntry) {
+                // Remove active class from all log entries
+                document.querySelectorAll('.log-entry').forEach(entry => {
+                    entry.classList.remove('active');
+                });
+                
+                const logElement = document.createElement('div');
+                logElement.className = `log-entry ${logEntry.type}`;
+                logElement.id = logEntry.callId;
+                logElement.textContent = logEntry.message;
+                
+                callLog.appendChild(logElement);
+                callLog.scrollTop = callLog.scrollHeight;
+                
+                // Highlight the active log entry
+                setTimeout(() => {
+                    logElement.classList.add('active');
+                }, 10);
+            }
+
+            function updateCallStack(logEntry) {
+                // Clear and rebuild call stack to reflect current state
+                callStack.innerHTML = '';
+                
+                // Find all active calls (not completed)
+                const activeCalls = currentCallStack.filter(call => 
+                    call.depth <= logEntry.depth && 
+                    (call.status === 'active' || call.callId === logEntry.callId)
+                );
+                
+                // Add frames to call stack display
+                activeCalls.forEach(call => {
+                    const frame = document.createElement('div');
+                    frame.className = `stack-frame ${call.callId === logEntry.callId ? 'active' : ''}`;
+                    frame.textContent = `findLCA(node=${call.node}, depth=${call.depth})`;
+                    callStack.appendChild(frame);
+                });
+                
+                callStack.scrollTop = callStack.scrollHeight;
+            }
+
+            function updateRecursionPath(logEntry) {
+                if (logEntry.type === 'enter') {
+                    if (recursionPath.textContent === 'Execution path will appear here') {
+                        recursionPath.textContent = 'Start → ';
+                    }
+                    recursionPath.textContent += `${logEntry.node} → `;
+                } else if (logEntry.type === 'exit') {
+                    // For exit, we don't add to path but might update display
+                    if (logEntry.node === (lcaNode ? lcaNode.value : null)) {
+                        recursionPath.textContent += `LCA Found: ${logEntry.node}`;
+                    }
+                }
+            }
+
+            function updateCodeHighlighting(logEntry) {
+                // Reset all highlights
+                Object.values(codeLines).forEach(line => {
+                    line.classList.remove('highlight');
+                });
+                
+                // Highlight based on log entry type
+                if (logEntry.type === 'enter') {
+                    codeLines[1].classList.add('highlight');
+                } else if (logEntry.type === 'null') {
+                    codeLines[1].classList.add('highlight');
+                } else if (logEntry.type === 'info' && logEntry.message.includes('going LEFT')) {
+                    codeLines[2].classList.add('highlight');
+                    codeLines[3].classList.add('highlight');
+                } else if (logEntry.type === 'info' && logEntry.message.includes('going RIGHT')) {
+                    codeLines[4].classList.add('highlight');
+                    codeLines[5].classList.add('highlight');
+                } else if (logEntry.type === 'info' && logEntry.message.includes('LCA FOUND')) {
+                    codeLines[6].classList.add('highlight');
+                }
+            }
+
+            function updateDepthIndicator(logEntry) {
+                depthIndicator.textContent = `Current depth: ${logEntry.depth}`;
+            }
+
+            // Function to draw the BST
+            function drawTree(root, currentNode = null, lcaNodeValue = null, visitedNodes = new Set()) {
+                // Clear SVG
+                svg.innerHTML = '';
+                
+                if (!root) return;
+                
+                const nodeRadius = 20;
+                const levelHeight = 80;
+                const treeWidth = 600;
+                
+                // Calculate positions for all nodes
+                const positions = new Map();
+                calculatePositions(root, treeWidth / 2, 50, treeWidth / 4, levelHeight, positions);
+                
+                // Draw lines first (so they appear behind nodes)
+                drawLines(root, positions, svg);
+                
+                // Draw nodes
+                drawNodes(root, positions, svg, nodeRadius, currentNode, lcaNodeValue, visitedNodes);
+            }
+
+            function calculatePositions(node, x, y, offsetX, offsetY, positions) {
+                if (!node) return;
+                
+                positions.set(node.value, { x, y });
+                
+                if (node.left) {
+                    calculatePositions(node.left, x - offsetX, y + offsetY, offsetX / 2, offsetY, positions);
+                }
+                
+                if (node.right) {
+                    calculatePositions(node.right, x + offsetX, y + offsetY, offsetX / 2, offsetY, positions);
+                }
+            }
+
+            function drawLines(node, positions, svg) {
+                if (!node) return;
+                
+                const nodePos = positions.get(node.value);
+                
+                if (node.left) {
+                    const leftPos = positions.get(node.left.value);
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', nodePos.x);
+                    line.setAttribute('y1', nodePos.y);
+                    line.setAttribute('x2', leftPos.x);
+                    line.setAttribute('y2', leftPos.y);
+                    line.setAttribute('class', 'line');
+                    svg.appendChild(line);
+                    drawLines(node.left, positions, svg);
+                }
+                
+                if (node.right) {
+                    const rightPos = positions.get(node.right.value);
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', nodePos.x);
+                    line.setAttribute('y1', nodePos.y);
+                    line.setAttribute('x2', rightPos.x);
+                    line.setAttribute('y2', rightPos.y);
+                    line.setAttribute('class', 'line');
+                    svg.appendChild(line);
+                    drawLines(node.right, positions, svg);
+                }
+            }
+
+            function drawNodes(node, positions, svg, radius, currentNode, lcaNodeValue, visitedNodes) {
+                if (!node) return;
+                
+                const nodePos = positions.get(node.value);
+                
+                // Create node circle
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', nodePos.x);
+                circle.setAttribute('cy', nodePos.y);
+                circle.setAttribute('r', radius);
+                
+                // Set node color based on state
+                if (node.value === lcaNodeValue) {
+                    circle.setAttribute('class', 'node lca');
+                } else if (node.value === currentNode) {
+                    circle.setAttribute('class', 'node current');
+                } else if (visitedNodes.has(node.value)) {
+                    circle.setAttribute('class', 'node visited');
+                } else {
+                    circle.setAttribute('class', 'node');
+                }
+                
+                svg.appendChild(circle);
+                
+                // Add node value text
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', nodePos.x);
+                text.setAttribute('y', nodePos.y);
+                text.setAttribute('class', 'node-value');
+                text.textContent = node.value;
+                svg.appendChild(text);
+                
+                // Recursively draw child nodes
+                drawNodes(node.left, positions, svg, radius, currentNode, lcaNodeValue, visitedNodes);
+                drawNodes(node.right, positions, svg, radius, currentNode, lcaNodeValue, visitedNodes);
+            }
+        });
+    </script>
+</body>
+</html>

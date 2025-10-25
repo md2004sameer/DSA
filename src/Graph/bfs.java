@@ -1,9 +1,6 @@
 package Graph;
-
 import java.util.*;
-
 public class bfs {
-
     public static ArrayList<Integer> helper(ArrayList<ArrayList<Integer>> adj) {
         ArrayList<Integer> res = new ArrayList<>();
         int size = adj.size();

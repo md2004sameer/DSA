@@ -16,9 +16,8 @@ public class diameter {
         if(node == null) return 0;
 
         int left = helper(node.left);
-        System.out.println("left : "+left);
+       
         int right = helper(node.right);
-        System.out.println("right : "+right);
         int curr = left + right;
         
         ans=  Math.max(ans, curr);// update the max dia in global var

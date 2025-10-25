@@ -37,7 +37,5 @@ public class levelOrder {
 
         }
         return arr;
-
-
     }
 }
