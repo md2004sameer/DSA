@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 public class sum {
     static int  helper(int n ){

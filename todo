@@ -1,0 +1,95 @@
+
+**1. Simple Linear Recursion (single call per step)**
+Focus: recursion depth, base case, returning values.
+
+1. Factorial of `n` - done 
+2. Sum of first `n` natural numbers - done 
+3. Reverse a string - done 
+4. Print numbers from `1` to `n` - done 
+5. Print numbers from `n` to `1` - done 
+6. Compute `n`th Fibonacci number (linear recursion version) - done
+7. Compute power `x^n` - done
+8. Count digits in a number - done 
+9. Sum of digits in a number - done 
+10. Check if a number is a palindrome - done 
+
+---
+
+**2. Tail Recursion**
+Focus: accumulator passing, optimizing stack use.
+
+1. Tail-recursive factorial - done 
+2. Tail-recursive Fibonacci - done 
+3. Sum of first `n` numbers using tail recursion - done 
+4. Reverse a string using tail recursion
+5. Greatest common divisor (GCD) tail recursion
+6. Compute power `x^n` with accumulator
+7. Count digits in a number tail recursively
+8. Sum of digits tail recursion
+9. Check palindrome tail recursion
+10. Print numbers `n` to `1` tail recursively
+
+---
+
+**3. Tree Recursion (multiple calls per step)**
+Focus: exponential call stack growth.
+
+1. Fibonacci naive recursion - done 
+2. Print all subsequences of a string - done 
+3. Generate all subsets of a set - done 
+4. Generate all binary strings of length `n` - done 
+5. Count paths in a grid (move right/down)
+6. Print all combinations of `n` balanced parentheses
+7. Count ways to climb stairs (1 or 2 steps)
+8. Generate all strings from keypad digits
+9. Generate all permutations of a string (recursive tree form)
+10. Solve Tower of Hanoi
+
+---
+
+**4. Indirect / Mutual Recursion**
+Focus: functions calling each other.
+
+1. `even(n)` and `odd(n)` check
+2. Print even and odd numbers up to `n`
+3. Recursive palindrome check using mutual recursion
+4. Check if a number is prime using mutual recursion
+5. Recursive sequence generation `f(n)` calls `g(n-1)`
+6. Fibonacci using two mutually recursive functions
+7. Alternating sum sequence using two functions
+8. Recursive toggling function (on/off sequence)
+9. Recursive binary search with two mutually recursive helpers
+10. Sum of even and odd positioned elements separately
+
+---
+
+**5. Backtracking Recursion**
+Focus: incremental solution building, undoing changes.
+
+1. Generate all subsets of a set
+2. Generate all permutations of a string
+3. N-Queens problem
+4. Rat in a maze (all paths)
+5. Sudoku solver
+6. Word break problem (all splits)
+7. Generate all binary strings of length `n`
+8. Letter case permutations of a string
+9. Combination sum (all combinations that add to target)
+10. Palindrome partitioning
+
+---
+
+**6. Divide and Conquer Recursion**
+Focus: splitting problem, merging results.
+
+1. Merge Sort
+2. Quick Sort
+3. Binary Search
+4. Maximum in array
+5. Minimum in array
+6. Power `x^n` using divide and conquer
+7. Sum of array elements using divide/conquer
+8. Count inversions in array
+9. Matrix multiplication using divide/conquer
+10. Closest pair of points
+

@@ -16,6 +16,6 @@ public class test {
 // git status 
 /*
 git add .
-git commit -m "lgta hai come-back ho jaega"
+git commit -m "consistency is key."
 git push
  */
