@@ -38,7 +38,7 @@ Focus: exponential call stack growth.
 2. Print all subsequences of a string - done 
 3. Generate all subsets of a set - done 
 4. Generate all binary strings of length `n` - done 
-5. Count paths in a grid (move right/down)
+5. Count paths in a grid (move right/down) - done 
 6. Print all combinations of `n` balanced parentheses
 7. Count ways to climb stairs (1 or 2 steps)
 8. Generate all strings from keypad digits

@@ -1,6 +1,7 @@
 package Recursion;
 
 public class binString {
+    // it print the all binary number of n - length
     static void helper(int n , String st){
         if(n == 0){
             System.out.println(st);

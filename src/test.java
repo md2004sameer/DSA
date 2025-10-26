@@ -16,6 +16,6 @@ public class test {
 // git status 
 /*
 git add .
-git commit -m "consistency is key."
+git commit -m "recursion is easy."
 git push
  */

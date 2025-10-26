@@ -4,18 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-class TreeNode{
-    int val ; 
-    TreeNode left ;
-    TreeNode right ;
 
-    public TreeNode() {}
-    public TreeNode(int val){
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
-}
 public class rightSideView {
 
     public static ArrayList<Integer> helper(TreeNode root){

@@ -1,15 +1,6 @@
 package Queue.easy;
 
-class Node{
-    int val;
-    Node next;
 
-    public Node(int val){
-        this.val = val;
-        this.next = null;
-    }
-
-}
 
 public class circularLL {
 

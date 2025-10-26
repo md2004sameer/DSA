@@ -1,0 +1,27 @@
+ACID stand for Atomicity , Consistency , Isolation , Durablity
+
+           Transction : A transction in DBMS is a sequnece of one or more operations performed as a single logical unit 
+           of work on the database.
+
+ 
+Atomicity - A transction is all or nothing , Either all operations is the tranctions
+            completed, or none are. No partial updates are allowed.
+
+            example : transferring money from A to B; either both debit and credit happen , or neither.
+
+Consistency : A transtion brings the database from one valid state to another , preserving all predefined rules,
+             constraints, and integrity.
+ 
+             example : After a transction, the total balance in a bank must still equal the sum of all individual accounts.
+
+Isolation : Concurrent transctions do not interfare  with each other. the intermediate states of a transction 
+             invisible to other transctions until commited.
+
+             example : two people booking seats at the same time , each sees a consistent 
+             view , avoiding double-booking.
+
+Durablity : Once a transction is commited , its changes are permanent , even if there is a system
+             failure immediately afterward.
+
+             example : After a successfull payment , the record remains in the database despites crashes.
+
