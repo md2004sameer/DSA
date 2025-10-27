@@ -1,4 +1,7 @@
 // test code
-git add .
-git commit -m "recursion is easy."
+/*
+ * 
+ * git add .
+git commit -m "pattern problems."
 git push
+ */
