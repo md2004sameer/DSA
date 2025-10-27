@@ -9,7 +9,7 @@ public class stringRev {
         // charAt(0) is used to get the first char
     }
     public static void main(String []args){
-        String st = "kayak";
+        String st = "cba";
         String ans = helper(st);
         System.out.println(ans);
     }

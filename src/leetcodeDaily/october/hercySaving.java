@@ -1,4 +1,4 @@
-package leetcodeDaily;
+package leetcodeDaily.october;
 
 public class hercySaving {
     // leetcode 1716

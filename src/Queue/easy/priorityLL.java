@@ -1,11 +1,11 @@
 package Queue.easy;
 
-class Node {
+class PriorityNode {
     int val;
     int priority;
-    Node next;
+    PriorityNode next;
 
-    public Node(int val, int priority) {
+    public PriorityNode(int val, int priority) {
         this.val = val;
         this.priority = priority;
         this.next = null;
@@ -14,19 +14,19 @@ class Node {
 
 public class priorityLL {
 
-    Node front = null;  // points to highest priority element
-    Node rear = null;   // optional, can be used if needed
+    PriorityNode front = null;  // points to highest priority element
+    PriorityNode rear = null;   // optional, can be used if needed
 
     // Insert element in proper position based on priority
     public void enqueue(int val, int priority) {
-        Node newNode = new Node(val, priority);
+        PriorityNode newNode = new PriorityNode(val, priority);
 
         if (front == null || priority > front.priority) {
             // insert at front if list empty or new node has higher priority
             newNode.next = front;
             front = newNode;
         } else {
-            Node current = front;
+            PriorityNode current = front;
             while (current.next != null && current.next.priority >= priority) {
                 current = current.next;
             }
