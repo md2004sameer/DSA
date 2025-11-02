@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 public class path {
     static void helper(int i , int j , int m , int n , String path ){

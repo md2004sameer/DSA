@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 public class stringRev {
     static String helper(String st ){

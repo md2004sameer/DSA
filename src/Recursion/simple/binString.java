@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 public class binString {
     // it print the all binary number of n - length

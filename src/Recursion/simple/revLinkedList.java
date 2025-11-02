@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 class Node{
     int val;

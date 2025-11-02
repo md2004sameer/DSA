@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 import java.util.Stack;
 public class insertBottom {
     static void helper(Stack<Integer> st, int val){

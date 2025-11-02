@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 public class decToBin {
     static String helper(int n , String st){

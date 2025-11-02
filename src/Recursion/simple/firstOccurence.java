@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 public class firstOccurence {
     static int helper(int idx , int arr[] , int target){

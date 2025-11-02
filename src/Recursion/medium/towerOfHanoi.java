@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.medium;
 
 public class towerOfHanoi {
     static void hanoi(int n, char src, char aux, char dest){

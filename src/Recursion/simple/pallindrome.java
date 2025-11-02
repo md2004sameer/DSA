@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 public class pallindrome {
     static boolean helper(String st){

@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 
 import java.util.ArrayList;
 public class powerSet {

@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.medium;
 
 public class zigzag {
     static void print(int n){

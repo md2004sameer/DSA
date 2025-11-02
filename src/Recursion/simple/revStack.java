@@ -1,4 +1,4 @@
-package Recursion;
+package Recursion.simple;
 import java.util.*;
 public class revStack {
     static void helper(Stack<Integer> st ){
